@@ -23,8 +23,20 @@ Finally, the extension has to be enabled in jupyter. Add to
 `nyroglancer.extension`, e.g.:
 ```python
 c = get_config()
-c.NotebookApp.nbserver_extensions = { 'nyroglancer.extension': True }
+c.NotebookApp.server_extensions = ['nyroglancer.extension']
 ```
+
+or if `~/.jupyter/jupyter_notebook_cofig.json` exists, you can add `nyroglancer.extension` to the
+`server_extensions` field.
+
+These config options work as of 5/9/17 with the following package versions:
+
+  - Jupyer: 4.3.0
+  - IPython: 5.1.0
+  - nbformat: 4.3.0
+
+Try updating nbformat if you have problems - if that fails you may want to check out the docs on the Jupyter config system,
+as it seems to change frequently.
 
 Usage
 =====
@@ -33,14 +45,13 @@ In your notebook, create a `nyroglancer.Viewer` and populate it with the numpy a
 
 ```python
 import nyroglancer
-import numpy as np
 import h5py
 
 raw = h5py.File("test.hdf")['volumes/raw']
 seg = h5py.File("test.hdf")['volumes/labels/neuron_ids']
 
-big_viewer = nyroglancer.Viewer()
-big_viewer.add(raw, volume_type="image", voxel_size = [4.0, 4.0, 40.0], name="raw")
-big_viewer.add(seg, volume_type="segmentation", voxel_size = [4.0, 4.0, 40.0], name="neuron IDs")
-big_viewer.show()
+viewer = nyroglancer.Viewer()
+viewer.add(raw, resolution=[40,4,4], name="raw")
+viewer.add(seg, resolution=[40,4,4], name="neuron IDs")
+viewer.show()
 ```
